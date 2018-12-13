@@ -35,8 +35,10 @@ EXPOSE 3306
 # This image must forever use UID 27 for mysql user so our volumes are
 # safe in the future. This should *never* change, the last test is there
 # to make sure of that.
+COPY MariaDB.repo /etc/yum.repos.d/MariaDB.repo
+
 RUN yum install -y centos-release-scl-rh && \
-    INSTALL_PKGS="rsync tar gettext hostname bind-utils groff-base shadow-utils rh-mariadb102" && \
+    INSTALL_PKGS="rsync tar gettext hostname bind-utils groff-base shadow-utils MariaDB-server MariaDB-client" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all && \
