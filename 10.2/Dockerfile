@@ -35,7 +35,7 @@ EXPOSE 3306
 # This image must forever use UID 27 for mysql user so our volumes are
 # safe in the future. This should *never* change, the last test is there
 # to make sure of that.
-COPY MariaDB.repo /etc/yum.repos.d/MariaDB.repo
+COPY 10.2/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
 
 RUN yum install -y centos-release-scl-rh && \
     INSTALL_PKGS="rsync tar gettext hostname bind-utils groff-base shadow-utils MariaDB-server MariaDB-client" && \
@@ -43,19 +43,19 @@ RUN yum install -y centos-release-scl-rh && \
     rpm -V $INSTALL_PKGS && \
     yum clean all && \
     mkdir -p /var/lib/mysql/data && chown -R mysql.0 /var/lib/mysql && \
-    test "$(id mysql)" = "uid=27(mysql) gid=27(mysql) groups=27(mysql)"
+    test "$(id mysql)" = "uid=999(mysql) gid=998(mysql) groups=998(mysql)"
 
 # Get prefix path and path to scripts rather than hard-code them in scripts
 ENV CONTAINER_SCRIPTS_PATH=/usr/share/container-scripts/mysql \
-    MYSQL_PREFIX=/opt/rh/rh-mariadb102/root/usr \
-    ENABLED_COLLECTIONS=rh-mariadb102
+    MYSQL_PREFIX=/usr 
+#    ENABLED_COLLECTIONS=rh-mariadb102
 
 # When bash is started non-interactively, to run a shell script, for example it
 # looks for this variable and source the content of this file. This will enable
 # the SCL for all scripts without need to do 'scl enable'.
-ENV BASH_ENV=${CONTAINER_SCRIPTS_PATH}/scl_enable \
-    ENV=${CONTAINER_SCRIPTS_PATH}/scl_enable \
-    PROMPT_COMMAND=". ${CONTAINER_SCRIPTS_PATH}/scl_enable"
+# ENV BASH_ENV=${CONTAINER_SCRIPTS_PATH}/scl_enable \
+#     ENV=${CONTAINER_SCRIPTS_PATH}/scl_enable \
+#     PROMPT_COMMAND=". ${CONTAINER_SCRIPTS_PATH}/scl_enable"
 
 COPY 10.2/root-common /
 COPY 10.2/s2i-common/bin/ $STI_SCRIPTS_PATH
@@ -71,7 +71,7 @@ RUN rm -rf /etc/my.cnf.d/* && \
 
 VOLUME ["/var/lib/mysql/data"]
 
-USER 27
+USER 999
 
 ENTRYPOINT ["container-entrypoint"]
 CMD ["run-mysqld"]

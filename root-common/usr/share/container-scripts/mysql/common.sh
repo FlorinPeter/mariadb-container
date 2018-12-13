@@ -78,7 +78,7 @@ function wait_for_mysql() {
 # Start local MySQL server with a defaults file
 function start_local_mysql() {
   log_info 'Starting MySQL server with disabled networking ...'
-  ${MYSQL_PREFIX}/libexec/mysqld \
+  /usr/sbin/mysqld \
     --defaults-file=$MYSQL_DEFAULTS_FILE \
     --skip-networking --socket=/tmp/mysql.sock "$@" &
   mysql_pid=$!
@@ -96,7 +96,7 @@ function initialize_database() {
   log_info 'Initializing database ...'
   log_info 'Running mysql_install_db ...'
   # Using --rpm since we need mysql_install_db behaves as in RPM
-  mysql_install_db --rpm --datadir=$MYSQL_DATADIR
+  mysql_install_db --basedir=/usr --datadir=$MYSQL_DATADIR
   start_local_mysql "$@"
 
   # Running mysql_upgrade creates the mysql_upgrade_info file in the data dir,
@@ -244,7 +244,7 @@ function number2version() {
 
 # Prints version of the mysqld that is currently available (string)
 function mysqld_version() {
-  ${MYSQL_PREFIX}/libexec/mysqld -V | awk '{print $3}'
+  /usr/sbin/mysqld -V | awk '{print $3}'
 }
 
 # Returns version from the daemon in integer format
