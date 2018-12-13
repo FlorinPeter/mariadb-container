@@ -48,7 +48,6 @@ RUN yum install -y centos-release-scl-rh && \
 # Get prefix path and path to scripts rather than hard-code them in scripts
 ENV CONTAINER_SCRIPTS_PATH=/usr/share/container-scripts/mysql \
     MYSQL_PREFIX=/usr 
-#    ENABLED_COLLECTIONS=rh-mariadb102
 
 # When bash is started non-interactively, to run a shell script, for example it
 # looks for this variable and source the content of this file. This will enable
